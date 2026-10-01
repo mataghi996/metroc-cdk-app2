@@ -11,19 +11,18 @@ export class MetrocCdkApp2Stack extends cdk.Stack {
   constructor(scope: Construct, id: string, config: EnvironmentConfig, props?: cdk.StackProps) {
     super(scope, id, props);
  
-    // ---------------------------------------------------------------
+
     // KMS key used to encrypt the S3 bucket
-    // ---------------------------------------------------------------
+
     const encryptionKey = new kms.Key(this, 'MetroC-S3-KmsKey', {
       alias: 'alias/metroc-s3-key',
       description: 'KMS key for MetroC S3 bucket encryption',
       enableKeyRotation: true,
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
- 
-    // ---------------------------------------------------------------
+
     // S3 bucket: versioning enabled + KMS encryption
-    // ---------------------------------------------------------------
+   
     const bucket = new s3.Bucket(this, 'MetroC-S3-Bucket', {
       versioned: true,
       encryption: s3.BucketEncryption.KMS,
@@ -34,9 +33,9 @@ export class MetrocCdkApp2Stack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
  
-    // ---------------------------------------------------------------
+    
     // IAM role assumed by EC2 + AWS managed policies
-    // ---------------------------------------------------------------
+   
     const ec2Role = new iam.Role(this, 'MetroC-EC2-Role', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       description: 'Role assumed by the MetroC EC2 instance',
@@ -54,9 +53,9 @@ export class MetrocCdkApp2Stack extends cdk.Stack {
       roles: [ec2Role.roleName],
     });
  
-    // ---------------------------------------------------------------
+
     // EC2 instance (now with the instance profile attached)
-    // ---------------------------------------------------------------
+   
     const cfnInstance = new ec2.CfnInstance(this, 'MetroC-EC2-Instance', {
       imageId: config.ec2.amiId,
       instanceType: config.ec2.instanceType,
